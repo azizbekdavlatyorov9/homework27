@@ -20,6 +20,11 @@ type DeleteBookCount {
   deleteCount: Int!
 }
 
+type AuthResponse {
+  accessToken: String!
+  message: String!
+}
+
 type Query {
   findAll: [Book!]!
   findOne(id: Int!): Book!
@@ -30,6 +35,9 @@ type Mutation {
   update(updateBookInput: UpdateBookInput!, id: Float!): Book!
   remove(id: Float!): DeleteBookCount!
   register(registerInput: RegisterInput!): String!
+  verifyCode(verifyCodeInput: VerifyCodeInput!): AuthResponse!
+  login(loginInput: LoginInput!): String!
+  verifyLoginCode(verifyCodeInput: VerifyCodeInput!): AuthResponse!
 }
 
 input CreateBookInput {
@@ -44,6 +52,16 @@ input UpdateBookInput {
 
 input RegisterInput {
   username: String!
+  email: String!
+  password: String!
+}
+
+input VerifyCodeInput {
+  email: String!
+  code: String!
+}
+
+input LoginInput {
   email: String!
   password: String!
 }
