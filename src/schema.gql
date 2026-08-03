@@ -38,6 +38,8 @@ type Mutation {
   verifyCode(verifyCodeInput: VerifyCodeInput!): AuthResponse!
   login(loginInput: LoginInput!): String!
   verifyLoginCode(verifyCodeInput: VerifyCodeInput!): AuthResponse!
+  forgotPassword(forgotPasswordInput: ForgotPasswordInput!): String!
+  resetPassword(resetPasswordInput: ResetPasswordInput!): String!
 }
 
 input CreateBookInput {
@@ -64,4 +66,14 @@ input VerifyCodeInput {
 input LoginInput {
   email: String!
   password: String!
+}
+
+input ForgotPasswordInput {
+  email: String!
+}
+
+input ResetPasswordInput {
+  email: String!
+  code: String!
+  newPassword: String!
 }

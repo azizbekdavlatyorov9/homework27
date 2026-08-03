@@ -15,6 +15,8 @@ import { LoginInput } from "./dto/login.input";
 import { VerifyCodeInput } from "./dto/verify-code.input";
 import { MailService } from "../mail/mail.service";
 import { AuthResponse } from "./entities/auth-response.entity";
+import { ForgotPasswordInput } from "./dto/forgot-password.input";
+import { ResetPasswordInput } from "./dto/reset-password.input";
 
 @Injectable()
 export class AuthService {
@@ -185,4 +187,63 @@ export class AuthService {
 
     return this.generateToken(user, "Login successful");
   }
+
+  async forgotPassword(
+  forgotPasswordInput: ForgotPasswordInput,
+): Promise<string> {
+
+  const { email } = forgotPasswordInput;
+
+  const user = await this.userRepo.findOne({
+    where: { email },
+  });
+
+  if (!user) {
+    throw new NotFoundException(
+      "User not found",
+    );
+  }
+
+  const code = this.generateOtp();
+
+  user.code = code;
+  user.otpTime = Date.now() + 120000;
+
+  await this.userRepo.save(user);
+
+  await this.mailService.sendOtp(
+    email,
+    code,
+  );
+
+  return "Please check your email";
+}
+
+async resetPassword(
+  resetPasswordInput: ResetPasswordInput,
+): Promise<string> {
+
+  const { email, code, newPassword } =
+    resetPasswordInput;
+
+  const user = await this.validateOtp(
+    email,
+    code,
+  );
+
+  const hashPassword = await bcrypt.hash(
+    newPassword,
+    10,
+  );
+
+  user.password = hashPassword;
+
+  user.code = "";
+
+  user.otpTime = 0;
+
+  await this.userRepo.save(user);
+
+  return "Password changed successfully";
+}
 }

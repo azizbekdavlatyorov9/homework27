@@ -4,6 +4,8 @@ import { RegisterInput } from "./dto/register.input";
 import { AuthResponse } from "./entities/auth-response.entity";
 import { VerifyCodeInput } from "./dto/verify-code.input";
 import { LoginInput } from "./dto/login.input";
+import { ForgotPasswordInput } from "./dto/forgot-password.input";
+import { ResetPasswordInput } from "./dto/reset-password.input";
 
 @Resolver()
 export class AuthResolver {
@@ -49,4 +51,24 @@ verifyLoginCode(
   );
 }
 
+@Mutation(() => String)
+forgotPassword(
+  @Args("forgotPasswordInput")
+  forgotPasswordInput: ForgotPasswordInput,
+) {
+  return this.authService.forgotPassword(
+    forgotPasswordInput,
+  );
+}
+
+@Mutation(() => String)
+resetPassword(
+  @Args("resetPasswordInput")
+  resetPasswordInput: ResetPasswordInput,
+) {
+  return this.authService.resetPassword(
+    resetPasswordInput,
+  )
+
+}
 }
